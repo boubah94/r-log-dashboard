@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R Log Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: #101014; color: #e8e8ec; padding: 16px; }
+h1 { font-size: 1.4rem; margin: 0 0 4px; }
+.sub { color: #9a9aa5; font-size: .85rem; margin-bottom: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.card { background: #1a1a21; border: 1px solid #2a2a35; border-radius: 12px; padding: 12px 14px; }
+.card .v { font-size: 1.5rem; font-weight: 700; }
+.card .l { color: #9a9aa5; font-size: .75rem; margin-top: 2px; }
+.panel { background: #1a1a21; border: 1px solid #2a2a35; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+.panel h2 { font-size: 1rem; margin: 0 0 4px; }
+.panel p.desc { color: #9a9aa5; font-size: .8rem; margin: 0 0 10px; }
+canvas { max-height: 260px; }
+table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+td { padding: 8px 4px; border-top: 1px solid #2a2a35; }
+.muted { color: #9a9aa5; }
+.section { font-size: 1.1rem; margin: 22px 0 10px; }
+</style>
+</head>
+<body>
+<h1>🏃 R Log Dashboard</h1>
+<div class="sub">Runs from Notion R Log · daily activity from Apple Health · updated daily</div>
+
+<div class="grid">
+  <div class="card"><div class="v">9</div><div class="l">runs logged</div></div>
+  <div class="card"><div class="v">52.4</div><div class="l">total miles</div></div>
+  <div class="card"><div class="v">8:45</div><div class="l">avg pace /mi</div></div>
+  <div class="card"><div class="v">7:17</div><div class="l">best pace /mi</div></div>
+  <div class="card"><div class="v">8.1</div><div class="l">longest run (mi)</div></div>
+</div>
+
+<div class="section">Run history</div>
+<div class="panel"><h2>Pace per run</h2><p class="desc">min/mi — lower is faster</p><canvas id="cPace"></canvas></div>
+<div class="panel"><h2>Distance per run</h2><p class="desc">miles</p><canvas id="cDist"></canvas></div>
+<div class="panel"><h2>Avg heart rate per run</h2><canvas id="cHr"></canvas></div>
+
+<div class="section">Daily activity (Apple Health)</div>
+<div class="panel"><h2>Steps per day</h2><canvas id="cSteps"></canvas></div>
+<div class="panel"><h2>Walking + running distance</h2><p class="desc">miles per day</p><canvas id="cHDist"></canvas></div>
+
+<div class="section">Gait &amp; fitness indicators</div>
+<div class="panel"><h2>Walking speed</h2><p class="desc">mph — trending up means fitter legs</p><canvas id="cSpeed"></canvas></div>
+<div class="panel"><h2>Step length</h2><p class="desc">inches — longer stride at the same effort is a fitness gain</p><canvas id="cStepLen"></canvas></div>
+<div class="panel"><h2>Walking asymmetry</h2><p class="desc">% — lower is better; spikes can flag fatigue or injury risk</p><canvas id="cAsym"></canvas></div>
+
+<div class="section">Shoe mileage</div>
+<div class="panel"><table><tr><td colspan="2" class="muted">No shoes assigned yet — set the Shoe field on runs in Notion.</td></tr></table></div>
+
+<script>
+const grid = 'rgba(255,255,255,.08)', tick = '#9a9aa5';
+const opts = { plugins: { legend: { display: false } },
+  scales: { x: { ticks: { color: tick, maxRotation: 45 }, grid: { color: grid } },
+             y: { ticks: { color: tick }, grid: { color: grid } } } };
+const mk = (id, type, labels, data, color) => new Chart(document.getElementById(id),
+  { type, data: { labels, datasets: [{ data, backgroundColor: color, borderColor: color, fill: type==='line' ? false : true, tension: .25, pointRadius: 3 }] }, options: opts });
+const RL = ["10-06", "10-13", "10-22", "10-27", "10-30", "11-03", "11-06", "11-10", "11-13"], HL = ["09-20", "09-21", "09-22", "09-23", "09-24", "09-25", "09-26", "09-27", "09-28", "09-29", "09-30", "10-01"];
+mk('cPace','line',RL,[9.49, 9.73, 9.23, 8.59, 8.6, 8.39, 9.35, 7.28, 8.16],'#4da3ff');
+mk('cDist','bar',RL,[4.22, 6.08, 6, 6, 6, 6, 8.13, 3.04, 6.92],'#37c871');
+mk('cHr','bar',RL,[170, 163, 176, 164, 171, 172, 168, 170, 168],'#ff6b6b');
+mk('cSteps','bar',HL,[2979, 10310, 12930, 13774, 10747, 13401, 14016, 1917, 13411, 10142, 13343, 9194],'#b388ff');
+mk('cHDist','line',HL,[1.16, 3.96, 4.81, 5.12, 4.5, 4.92, 4.95, 0.74, 5.52, 3.95, 4.87, 3.87],'#37c871');
+mk('cSpeed','line',HL,[2.1, 2.2, 2.38, 2.26, 2.3, 2.2, 2.23, 2.07, 2.27, 2.21, 2.19, 2.05],'#4da3ff');
+mk('cStepLen','line',HL,[24.0, 24.7, 25.8, 25.3, 25.8, 24.6, 25.0, 24.6, 25.3, 25.2, 24.4, 24.5],'#ffb84d');
+mk('cAsym','line',HL,[0.1, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.5],'#ff6b6b');
+</script>
+</body>
+</html>
