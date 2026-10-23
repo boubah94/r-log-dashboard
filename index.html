@@ -8,20 +8,20 @@
 <style>
 :root { color-scheme: dark; }
 * { box-sizing: border-box; }
-body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: #101014; color: #e8e8ec; padding: 16px; }
+body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: #08080b; color: #e8e8ec; padding: 16px; }
 h1 { font-size: 1.4rem; margin: 0 0 4px; }
-.sub { color: #9a9aa5; font-size: .85rem; margin-bottom: 16px; }
+.sub { color: #8f8f9a; font-size: .85rem; margin-bottom: 16px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 18px; }
-.card { background: #1a1a21; border: 1px solid #2a2a35; border-radius: 12px; padding: 12px 14px; }
-.card .v { font-size: 1.5rem; font-weight: 700; }
-.card .l { color: #9a9aa5; font-size: .75rem; margin-top: 2px; }
-.panel { background: #1a1a21; border: 1px solid #2a2a35; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+.card { background: #101016; border: 1px solid #262633; border-radius: 12px; padding: 12px 14px; }
+.card .v { font-size: 1.5rem; font-weight: 700; color: #f5b921; }
+.card .l { color: #8f8f9a; font-size: .75rem; margin-top: 2px; }
+.panel { background: #101016; border: 1px solid #262633; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
 .panel h2 { font-size: 1rem; margin: 0 0 4px; }
-.panel p.desc { color: #9a9aa5; font-size: .8rem; margin: 0 0 10px; }
+.panel p.desc { color: #8f8f9a; font-size: .8rem; margin: 0 0 10px; }
 canvas { max-height: 260px; }
 table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-td { padding: 8px 4px; border-top: 1px solid #2a2a35; }
-.muted { color: #9a9aa5; }
+td { padding: 8px 4px; border-top: 1px solid #262633; }
+.muted { color: #8f8f9a; }
 .section { font-size: 1.1rem; margin: 22px 0 10px; }
 .err { background: #3a1f24; border: 1px solid #7a2e35; border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; }
 </style>
@@ -57,7 +57,7 @@ td { padding: 8px 4px; border-top: 1px solid #2a2a35; }
 <div class="panel"><table id="shoeTable"></table></div>
 
 <script>
-const grid = 'rgba(255,255,255,.08)', tick = '#9a9aa5';
+const grid = 'rgba(255,255,255,.08)', tick = '#8f8f9a';
 const opts = { plugins: { legend: { display: false } },
   scales: { x: { ticks: { color: tick, maxRotation: 45 }, grid: { color: grid } },
             y: { ticks: { color: tick }, grid: { color: grid } } } };
@@ -73,14 +73,14 @@ fetch('data.json?t=' + Date.now())
     set('stBest', s.best_pace); set('stLong', s.longest);
     if (d.hr_note) document.getElementById('hrNote').innerHTML = d.hr_note;
     document.getElementById('shoeTable').innerHTML = d.shoe_rows;
-    mk('cPace','line',d.run_labels,d.run_pace,'#4da3ff');
-    mk('cDist','bar',d.run_labels,d.run_dist,'#37c871');
-    mk('cHr','bar',d.run_labels,d.run_hr.map(h => h || 0),'#ff6b6b');
-    mk('cSteps','bar',d.h_labels,d.h_steps,'#b388ff');
-    mk('cHDist','line',d.h_labels,d.h_dist_mi,'#37c871');
-    mk('cSpeed','line',d.h_labels,d.h_speed,'#4da3ff');
-    mk('cStepLen','line',d.h_labels,d.h_steplen,'#ffb84d');
-    mk('cAsym','line',d.h_labels,d.h_asym,'#ff6b6b');
+    mk('cPace','line',d.run_labels,d.run_pace,'#f5b921');
+    mk('cDist','bar',d.run_labels,d.run_dist,'#7d8ca3');
+    mk('cHr','bar',d.run_labels,d.run_hr.map(h => h || 0),'#d95f4b');
+    mk('cSteps','bar',d.h_labels,d.h_steps,'#6e7f99');
+    mk('cHDist','line',d.h_labels,d.h_dist_mi,'#3fa46a');
+    mk('cSpeed','line',d.h_labels,d.h_speed,'#5b8dd9');
+    mk('cStepLen','line',d.h_labels,d.h_steplen,'#e07b39');
+    mk('cAsym','line',d.h_labels,d.h_asym,'#c94f6d');
   })
   .catch(e => {
     document.getElementById('err').innerHTML =
